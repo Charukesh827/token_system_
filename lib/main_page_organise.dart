@@ -47,8 +47,18 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             'Hostal Mess Token',
             style: TextStyle(
               color: Colors.white,
+              fontSize:20
             ),
           ),
+          actions: <Widget> [
+            IconButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  },
+                icon: Icon(Icons.logout,color: Colors.red,),
+                tooltip: "Log out",
+            )
+          ],
         ),
         body:AnimatedSwitcher(
           duration: Duration(milliseconds: 0),
@@ -57,7 +67,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             gradient:LinearGradient(
-              colors: [Color(0xff000428),Color(0xff004e92)]
+              colors: [
+                Color(0xff000428),
+                Color(0xff004e92)]
             ),
           ),
           child: BottomAppBar(

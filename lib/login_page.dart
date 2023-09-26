@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:token_system/main_page_organise.dart';
 import 'package:token_system/register_item.dart';
+import 'package:token_system/useit_page.dart';
+import 'package:token_system/scanner_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,12 +18,20 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context)=>Register(),
       child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) =>  LockScreen(),
+          '/home': (context) => MyHomePage(),
+          '/useNV' : (context) => Nveg_use(),
+          '/useV' : (context) => Veg_use(),
+          '/useE' : (context) => Egg_use(),
+          '/scan' : (context) => scannerPage()
+        },
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
           useMaterial3: true,
         ),
-        home: LockScreen(),
       ),
     );
   }
@@ -82,7 +92,6 @@ class _LockScreenState extends State<LockScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
                     width: 250,
-                    height: 60,
                     child: TextField(
                       onChanged: (String name) async{
                         username=name;
@@ -136,7 +145,8 @@ class _LockScreenState extends State<LockScreen> {
               ),
               ElevatedButton(
                 onPressed: (){
-                  Navigator.of(context).push(_homeRoute());
+                  if(username=='s') Navigator.pushNamed(context, '/scan');
+                  if(username=='h') Navigator.pushNamed(context, '/home');
                 },
                 child:Text.rich(
                   TextSpan(text: "Enter", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -152,13 +162,6 @@ class _LockScreenState extends State<LockScreen> {
   }
 }
 
-Route _homeRoute(){
-  return PageRouteBuilder(
-    pageBuilder:(context, animation, secondaryAnimation)=> const MyHomePage(),
-    transitionsBuilder:(context,animation,secondaryAnimation,child){
-      return child;
-    },
-  );
-}
+
 
 
