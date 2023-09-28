@@ -35,10 +35,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     now=DateTime.now();
     day=now.toUtc().weekday;
-    if(day == 5 || day==2 || day==4 || day==7){
+    if(day == 5 || day==2 || day==7){
       now=now.add(Duration(days: 2));
     }else if(day==1 || day==3 || day==6){
       now=now.add(Duration(days: 1));
+    }else if(day==4){
+      now=now.add(Duration(days: 3));
     }
     if(getegg==0) {
       eggElevate = 10;

@@ -4,6 +4,7 @@ import 'package:token_system/main_page_organise.dart';
 import 'package:token_system/register_item.dart';
 import 'package:token_system/useit_page.dart';
 import 'package:token_system/scanner_page.dart';
+import 'package:token_system/worker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
           '/useNV' : (context) => Nveg_use(),
           '/useV' : (context) => Veg_use(),
           '/useE' : (context) => Egg_use(),
-          '/scan' : (context) => scannerPage()
+          '/scan' : (context) => scannerPage(),
+          '/worker': (context) => workerMenu()
         },
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -145,7 +147,7 @@ class _LockScreenState extends State<LockScreen> {
               ),
               ElevatedButton(
                 onPressed: (){
-                  if(username=='s') Navigator.pushNamed(context, '/scan');
+                  if(username=='s') Navigator.pushNamed(context, '/worker');
                   if(username=='h') Navigator.pushNamed(context, '/home');
                 },
                 child:Text.rich(

@@ -6,7 +6,7 @@ class FavoritePage extends StatefulWidget{
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  var purchased=[1,1,20];
+  var purchased=[1,0,20];
   late var now;
   late var formatter;
   late String formattedDate;
