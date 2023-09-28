@@ -28,7 +28,8 @@ class TOK {
                   date TEXT,
                   veg INTEGER,
                   non INTEGER,
-                  egg INTEGER,   //doubt
+                  egg INTEGER,
+                  CONSTRAINT p_key PRIMARY KEY (roll,date),   
                   CONSTRAINT f_key FOREIGN KEY (roll) REFERENCES login(roll)
                   )"""
     );
@@ -106,15 +107,25 @@ class TOK {
   Future<void> update_token(String num , int v, int nv,int e) async{                          //updating the token table
     final db = await start();
     var data={'veg' : v , 'non' : nv };
-    await db.update('data',data,where:"num=?",whereArgs:[num]);
+    await db.update('token',data,where:"num=?",whereArgs:[num]);
     if (e!=0){
       egg(num,e);
     }
   }
 
-  Future<List<Map<String,dynamic>>> read(String num) async {                                   //displaying
+  Future<List<Map<String,dynamic>>> read_stud(String num) async {                                   //displaying the student
     final db=await start();
-    return db.query('data',where:"num=?",whereArgs:[num]);
+    return db.query('student',where:"num=?",whereArgs:[num]);
+  }
+
+  Future<List<Map<String,dynamic>>> read_emp(String num) async {                                   //displaying the employee
+    final db=await start();
+    return db.query('employee',where:"empid=?",whereArgs:[num]);
+  }
+
+  Future<List<Map<String,dynamic>>> read_manage(String num) async {                                //displaying the management
+    final db=await start();
+    return db.query('management',where:"id=?",whereArgs:[num]);
   }
 
   Future<void> del_MtoS(String num) async {                                                   //deleting student data by management
@@ -127,9 +138,9 @@ class TOK {
     await db.delete('employee',where : "empid=?",whereArgs: [num]);
   }
 
-  Future<void> check_stud() async{
+  /*Future<void> check_stud() async{
     final db=await start();
 
-  }
+  }*/
 }
 
