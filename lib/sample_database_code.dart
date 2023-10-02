@@ -1,141 +1,139 @@
 import 'dart:async';
-import 'package:sqflite/sqflite.dart' as sql; //sqflite package
+import "package:mysql1/mysql1.dart" ; //mysql1
+
 class TOK {
-  Future<sql.Database> start() async{
-    return sql.openDatabase(
-      "tokkens.db",
-      version:1,
-      onCreate : (sql.Database db,int version) async{
-        await create(db);
-      });
+
+  Future start() async{
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+      host : 'localhost',
+      port: 3306,
+      user: 'root',
+      db: 'token',
+      password: 'tokendatabase1.,'
+    ));
+    return conn;
   }
 
-  Future create(sql.Database db) async {
-    await db.execute("""
+
+ Future create(dynamic conn) async {
+    conn=await start();
+    await conn.query("""
       CREATE TABLE student(
-                    roll TEXT PRIMARY KEY ,
-                    sname TEXT,
-                    course TEXT,
-                    dob TEXT,
-                    yoj TEXT,
-                    pass TEXT
+                    roll varchar(15) PRIMARY KEY ,
+                    sname varchar(15),
+                    course varchar(15),
+                    dob date,
+                    yoj date,
+                    pass varchar(15)
                     )"""
     );
 
-    await db.execute("""
+    await conn.query("""
         CREATE TABLE token (
-                  roll TEXT ,
-                  date TEXT,
-                  veg INTEGER,
-                  non INTEGER,
-                  egg INTEGER,
-                  CONSTRAINT p_key PRIMARY KEY (roll,date),   
+                  roll varchar(15) ,
+                  dat date,
+                  veg int,
+                  non int,
+                  egg int,
+                  CONSTRAINT p_key PRIMARY KEY (roll,dat),   
                   CONSTRAINT f_key FOREIGN KEY (roll) REFERENCES login(roll)
                   )"""
     );
-    await db.execute("""
+    await conn.query("""
       CREATE TABLE employee(
-                    empid TEXT PRIMARY KEY ,
-                    ename TEXT,
-                    dob TEXT,
-                    doj TEXT,
-                    password TEXT
+                    empid varchar(15) PRIMARY KEY ,
+                    ename varchar(15),
+                    dob date,
+                    doj date,
+                    password varchar(15)
                     )"""
     );
 
-    await db.execute("""
+    await conn.query("""
       create table eggs(
-                  roll TEXT PRIMARY KEY,
-                  count INTEGER
+                  roll varchar(15) PRIMARY KEY,
+                  count int
       )"""
     );
 
-    await db.execute("""
+    await conn.query("""
       create table management(
-                  id TEXT PRIMARY KEY,
-                  pass TEXT
+                  id varchar(15) PRIMARY KEY,
+                  pass varchar(15)
     )"""
     );
   }
 
-   Future<void> ins_student(String num,String password) async {                                 //insert into student table
-     final db = await start();
-     var data = { 'roll': num, 'pass': password};
-     await db.insert('student', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+   Future ins_student(String num,String password) async {                                 //insert into student table
+      final conn=await start();
+      await conn.query('insert into values(roll,pass) values (?,?)',[num,password]);
    }
 
-   Future<void> egg(String num,int e) async{                                                    //insert into egg table
-      final db=await start();
-      var data={'roll' : num,'count' : e};
-      await db.insert('eggs',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+   Future ins_egg(String num,int e) async{                                                    //insert into egg table
+     final conn=await start();
+      await conn.query('insert into values(roll,count) values (?,?)',[num,e]);
    }
 
 
-  Future<void> instoken(String num,int v,int nv,int e) async{                                  //insert into tokken table
-    final db = await start();
-    var datas = { 'roll': num,'veg' : v , 'non' : nv};
-    await db.insert('token', datas,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  Future ins_token(String num,int v,int nv,int e) async{                                  //insert into token table
+    final conn=await start();
+    await conn.querry('insert into token (roll,veg,non) values(?,?,?)',[num,v,nv]);
     if (e!=0){
-      egg(num,e);
+      ins_egg(num,e);
     }
   }
 
-  Future<void> insemployee(String num,String password) async{                                  //insert into employee table
-    final db = await start();
-    var data = { 'empid' : num , 'pass' : password };
-    await db.insert('employee', data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  Future ins_employee(String num,String password) async{                                  //insert into employee table
+    final conn=await start();
+    await conn.query('insert into employee (empid,pass) values(?,?)',[num,password]);
   }
 
-  Future<void> ins_manage(String num,String pass) async{                                       //insert into management table
-    final db=await start();
-    var data={'id' : num , 'pass' : pass};
-    await db.insert('management',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  Future ins_manage(String num,String pass) async{                                       //insert into management table
+    final conn=await start();
+    await conn.query('insert into management (id,pass) values(?,?)',[num,pass]);
   }
 
-  Future<void> ins_MtoS(String num,String course,String name,String dob,String doj) async{          //inserting the student basic details by management
-    final db=await start();
-    var data={'roll' : num , 'sname' : name , 'course' : course , 'dob' : dob,'yoj': doj};
-    await db.insert('student',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  Future ins_MtoS(String num,String course,String name,String dob,String doj) async{          //inserting the student basic details by management
+    final conn=await start();
+    await conn.query('update student set sname=?,course=?,dob=?,yoj=? where roll=?',[name,course,dob,doj,num]);
   }
 
-  Future<void> ins_MtoE(String id,String name,String dob,String doj) async{          //inserting the employee basic details by management
-    final db=await start();
-    var data={'empid' : id , 'ename' : name , 'dob' : dob,'doj': doj};
-    await db.insert('student',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  Future ins_MtoE(String id,String name,String dob,String doj) async{          //inserting the employee basic details by management
+    final conn=await start();
+    await conn.query('update employee set ename=?,dob=?,doj=? where empid=?',[name,dob,doj,id]);
   }
 
-  Future<void> update_token(String num , int v, int nv,int e) async{                          //updating the token table
-    final db = await start();
-    var data={'veg' : v , 'non' : nv };
-    await db.update('token',data,where:"num=?",whereArgs:[num]);
+  Future update_token(String num , int v, int nv,int e) async{                          //updating the token table
+    final conn = await start();
+    await conn.query('update token set veg=?,non=? where roll=?',[v,nv,num]);
     if (e!=0){
-      egg(num,e);
+      ins_egg(num,e);
     }
   }
 
-  Future<List<Map<String,dynamic>>> read_stud(String num) async {                                   //displaying the student
-    final db=await start();
-    return db.query('student',where:"num=?",whereArgs:[num]);
+  Future read_stud(String num) async {                                   //displaying the student
+    final conn=await start();
+    return conn.query('select roll,sname,dob,yoj,extract(year from current_date)-extract(year from doj) as year from student where roll=? and  year<5',[num]);
   }
 
-  Future<List<Map<String,dynamic>>> read_emp(String num) async {                                   //displaying the employee
-    final db=await start();
-    return db.query('employee',where:"empid=?",whereArgs:[num]);
+  Future read_emp(String num) async {                                   //displaying the employee
+    final conn=await start();
+    var res=await conn.query('select empid,ename,dob,doj,extract(year from current_date)-extract(year from doj) as experience from employee where empid=? ',[num]);
   }
 
-  Future<List<Map<String,dynamic>>> read_manage(String num) async {                                //displaying the management
-    final db=await start();
-    return db.query('management',where:"id=?",whereArgs:[num]);
+  Future read_manage(String num) async {                                //displaying the management
+    final conn=await start();
+    var res=await conn.query('select id,pass from management',[num]);
   }
 
   Future<void> del_MtoS(String num) async {                                                   //deleting student data by management
-    final db=await start();
-    await db.delete('student',where : "roll=?",whereArgs: [num]);
+    final conn=await start();
+    await conn.query('delete from student where roll=?',[num]);
   }
 
   Future<void> del_MtoE(String num) async {                                                  //deleting student data by management
-    final db=await start();
-    await db.delete('employee',where : "empid=?",whereArgs: [num]);
+    final conn=await start();
+    await conn.query('delete from employee where empid=?',[num]);
   }
 
   /*Future<void> check_stud() async{
@@ -143,4 +141,7 @@ class TOK {
 
   }*/
 }
+
+
+
 
