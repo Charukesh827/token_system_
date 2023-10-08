@@ -144,7 +144,6 @@ class TOK {
       }
 
       else {
-        await conn.query('update student set pass=? where roll=?',[password,num]);
         return 1;
       }
    }
@@ -281,7 +280,3 @@ class TOK {
   }
 
 }
-
-
-
-
