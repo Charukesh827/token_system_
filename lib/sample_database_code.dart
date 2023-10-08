@@ -1,7 +1,6 @@
 import 'dart:async';
+import "package:aquedart/aquedart.dart"; // for working with api
 import "package:mysql1/mysql1.dart" ; //mysql1
-
-class TOK {
 
   Future start() async{
     final conn = await MySqlConnection.connect(ConnectionSettings(
@@ -25,8 +24,8 @@ class TOK {
                     dob date,
                     yoj date,
                     pass varchar(15),
-                    CONSTRAINT ck_roll check (roll in (regecp_like (roll,'^(2-4){2}[a-z]{1}(0-9){3}')),((regecp_like (roll,'^(2-4){2}[a-z]{2}(0-9){2}'))),
-                    constraint cou_chk ckeck (course in (
+                    CONSTRAINT ck_roll check (roll in (regexp_like (roll,'^(2-4){2}[a-z]{1}(0-9){3}')),((regexp_like (roll,'^(2-4){2}[a-z]{2}(0-9){2}'))),
+                    constraint cou_chk check (course in (
                                                             'Automobile Engineering',
                                                             'Biomedical Engineering',
                                                             'Civil Engineering',
@@ -110,6 +109,61 @@ class TOK {
     );
   }
 
+
+
+  //LOGIN PAGE CHECKING
+
+  void login(String num,String password) {
+   if(num[0] == '2' && num[1]== '2'){
+     chk_student(num, password);
+   }
+   else if(num[0]=='E'){
+     chk_employee(num,password);
+   }
+   else if(num[0]=='M'){
+     chk_manage(num,password);
+   }
+  }
+
+  //CHECKING THE STUDENT DATA
+
+   Future<dynamic> chk_student(String num,String password) async {
+      final conn=await start();
+      final res=await conn.query('SELECT * FROM student where roll=?',[num]);
+
+      if (res.isEmpty){
+        return 0;
+      }
+
+      else {
+        return 1;
+      }
+   }
+
+  //CHECKING THE EMPLOYEE DATA
+
+  Future<dynamic> chk_employee(String num,String password) async{
+    final conn=await start();
+
+    final res=await conn.query('SELECT * FROM employee where empid=?',[num]);
+
+    if (res.isEmpty){
+      return 0;
+    }
+
+    else {
+      return 1;
+    }
+
+  }
+
+  Future <dynamic> chk_manage(String num,String pass) async{
+    final conn=await start();
+    await conn.query('insert into management (id,pass) values(?,?)',[num,pass]);
+  }
+
+  //INSERTING DATA TO TOTAL_COUNTS TABLE
+
   Future<dynamic> ins_tot_counts(String dat,int tot_veg,int tot_non,) async {
     final conn=await start();
     await conn.query('''INSERT INTO tot_count (used_veg)
@@ -132,23 +186,11 @@ class TOK {
     await conn.query('''update tot_count set(not_used_non_veg)=tot_non-not_used_non_veg
                         where date=?''',[dat]);
 
-
   }
 
-   Future<dynamic> ins_student(String num,String password) async {                                 //insert into student table
-      final conn=await start();
-      final res=await conn.query('SELECT * FROM student where roll=?',[num]);
+   //INSERT THE DATA IN EGG TABLE
 
-      if (res.isEmpty){
-        return 0;
-      }
-
-      else {
-        return 1;
-      }
-   }
-
-   Future<dynamic> ins_egg(String num,int e) async{                                                    //insert into egg table
+   Future<dynamic> ins_egg(String num,int e) async{
      final conn=await start();
      final res=await conn.query('SELECT * FROM student where roll=?',[num]);
 
@@ -162,8 +204,9 @@ class TOK {
      return 1;
    }
 
+  //INSERT THE DATA IN TOKEN TABLE
 
-  Future ins_token(String num,int v,int nv,int e,String dat) async{                                  //insert into token table
+  Future ins_token(String num,int v,int nv,int e,String dat) async{
     final conn=await start();
     final res=await conn.query('select * from token where roll=?',[num]);
 
@@ -179,33 +222,20 @@ class TOK {
     if (e!=0){
       ins_egg(num,e);
     }
+    check(num);
     return 1;
   }
 
-  Future<dynamic> ins_employee(String num,String password) async{                                  //insert into employee table
+  //FUNCTION TO CHECK IF THE STUDENT HAS EMPTY RECORDS
+
+  Future<dynamic> check(String num) async{
     final conn=await start();
-
-    final res=await conn.query('SELECT * FROM employee where empid=?',[num]);
-
-    if (res.isEmpty){
-      return 0;
-    }
-
-    else {
-      await conn.query('update employee set pass=? where roll=?',[password,num]);
-      return 1;
-    }
-
+    await conn.query('delete from token where veg=0 and non=0 and roll=?',[num]);
   }
 
-  Future <dynamic> ins_management() async{                                       //insert into management table
-    final conn=await start();
-    String num="C5386";
-    String pass="1234";
-    await conn.query('insert into management (id,pass) values(?,?)',[num,pass]);
-  }
+  //INSERT BASIC DETAILS OF THE STUDENT
 
-  Future<dynamic> ins_MtoS(String num,String course,String name,String dob,String doj) async{          //inserting the student basic details by management
+  Future<dynamic> ins_MtoS(String num,String course,String name,String dob,String doj) async{
     final conn=await start();
 
     final res=await conn.query('select * from student where roll=?',[num]);
@@ -220,7 +250,9 @@ class TOK {
      }
   }
 
-  Future ins_MtoE(String id,String name,String dob,String doj) async{          //inserting the employee basic details by management
+  //INSERTING THE BASIC DETAILS OF EMPLOYEE
+
+  Future ins_MtoE(String id,String name,String dob,String doj) async{
     final conn=await start();
 
     final res=await conn.query('select * from employee where empid=?',[num]);
@@ -235,18 +267,23 @@ class TOK {
     }
   }
 
-  Future<dynamic> read_stud(String num) async {                                   //displaying the student
+  //DISPLAYING THE STUDENT DETAILS
+
+  Future<dynamic> read_stud(String num) async {
     final conn=await start();
     return conn.query('select roll,sname,dob,yoj,extract(year from current_date)-extract(year from doj) as year from student where roll=? and  year<5',[num]);
   }
 
-  Future<dynamic> read_emp(String num) async {                                   //displaying the employee
+  //DISPLAYING THE EMPLOYEE DETAILS
+
+  Future<dynamic> read_emp(String num) async {
     final conn=await start();
     var res=await conn.query('select empid,ename,dob,doj,extract(year from current_date)-extract(year from doj) as experience from employee where empid=? ',[num]);
   }
 
+  //DELETING THE STUDENT DETAILS
 
-  Future<dynamic> del_MtoS(String num) async {                                                   //deleting student data by management
+  Future<dynamic> del_MtoS(String num) async {
     final conn=await start();
     final res=await conn.query('select * from student where roll=?',[num]);
 
@@ -259,8 +296,9 @@ class TOK {
     }
   }
 
+  //DELETING THE EMPLOYEE DATA
+
   Future<dynamic> del_MtoE(String num) async {
-    //deleting student data by management
     final conn = await start();
     final res=await conn.query('select * from employee where empid=?',[num]);
 
@@ -273,10 +311,3 @@ class TOK {
       return 1;
     }
   }
-
-  Future<dynamic> check(String num) async{
-    final conn=await start();
-    await conn.query('delete from token where veg=0 and non=0 and roll=?',[num]);
-  }
-
-}
