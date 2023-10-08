@@ -56,21 +56,21 @@ class TOK {
     )"""
     );
   }
-
-   Future<void> ins_student(String num,String password) async {                                 //insert into student table
+//insert into student table
+   Future<void> ins_student(String num,String password) async {
      final db = await start();
      var data = { 'roll': num, 'pass': password};
      await db.insert('student', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
    }
-
-   Future<void> egg(String num,int e) async{                                                    //insert into egg table
+//insert into egg table
+   Future<void> egg(String num,int e) async{
       final db=await start();
       var data={'roll' : num,'count' : e};
       await db.insert('eggs',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
    }
 
-
-  Future<void> instoken(String num,int v,int nv,int e) async{                                  //insert into tokken table
+//insert into tokken table
+  Future<void> instoken(String num,int v,int nv,int e) async{
     final db = await start();
     var datas = { 'roll': num,'veg' : v , 'non' : nv};
     await db.insert('token', datas,conflictAlgorithm: sql.ConflictAlgorithm.replace);
@@ -78,32 +78,32 @@ class TOK {
       egg(num,e);
     }
   }
-
-  Future<void> insemployee(String num,String password) async{                                  //insert into employee table
+//insert into employee table
+  Future<void> insemployee(String num,String password) async{
     final db = await start();
     var data = { 'empid' : num , 'pass' : password };
     await db.insert('employee', data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
-
-  Future<void> ins_manage(String num,String pass) async{                                       //insert into management table
+//insert into management table
+  Future<void> ins_manage(String num,String pass) async{
     final db=await start();
     var data={'id' : num , 'pass' : pass};
     await db.insert('management',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
-
-  Future<void> ins_MtoS(String num,String course,String name,String dob,String doj) async{          //inserting the student basic details by management
+  //inserting the student basic details by management
+  Future<void> ins_MtoS(String num,String course,String name,String dob,String doj) async{
     final db=await start();
     var data={'roll' : num , 'sname' : name , 'course' : course , 'dob' : dob,'yoj': doj};
     await db.insert('student',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
-
-  Future<void> ins_MtoE(String id,String name,String dob,String doj) async{          //inserting the employee basic details by management
+//inserting the employee basic details by management
+  Future<void> ins_MtoE(String id,String name,String dob,String doj) async{
     final db=await start();
     var data={'empid' : id , 'ename' : name , 'dob' : dob,'doj': doj};
     await db.insert('student',data,conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
-
-  Future<void> update_token(String num , int v, int nv,int e) async{                          //updating the token table
+//updating the token table
+  Future<void> update_token(String num , int v, int nv,int e) async{
     final db = await start();
     var data={'veg' : v , 'non' : nv };
     await db.update('data',data,where:"num=?",whereArgs:[num]);
@@ -111,18 +111,18 @@ class TOK {
       egg(num,e);
     }
   }
-
-  Future<List<Map<String,dynamic>>> read(String num) async {                                   //displaying
+//displaying
+  Future<List<Map<String,dynamic>>> read(String num) async {
     final db=await start();
     return db.query('data',where:"num=?",whereArgs:[num]);
   }
-
-  Future<void> del_MtoS(String num) async {                                                   //deleting student data by management
+//deleting student data by management
+  Future<void> del_MtoS(String num) async {
     final db=await start();
     await db.delete('student',where : "roll=?",whereArgs: [num]);
   }
-
-  Future<void> del_MtoE(String num) async {                                                  //deleting student data by management
+//deleting student data by management
+  Future<void> del_MtoE(String num) async {
     final db=await start();
     await db.delete('employee',where : "empid=?",whereArgs: [num]);
   }

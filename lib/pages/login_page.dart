@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:token_system/employee_create.dart';
 import 'package:token_system/main_page_organise.dart';
+import 'package:token_system/manger.dart';
 import 'package:token_system/register_item.dart';
+import 'package:token_system/student_create.dart';
+import 'package:token_system/student_delete.dart';
 import 'package:token_system/useit_page.dart';
 import 'package:token_system/scanner_page.dart';
-import 'package:token_system/worker.dart';
+import 'package:token_system/employee_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +31,11 @@ class MyApp extends StatelessWidget {
           '/useV' : (context) => Veg_use(),
           '/useE' : (context) => Egg_use(),
           '/scan' : (context) => scannerPage(),
-          '/worker': (context) => workerMenu()
+          '/worker': (context) => workerMenu(),
+          '/manager': (context) => managerPage(),
+          '/studentC': (context) => studentCreate(),
+          '/studentD' : (context) => studentDelete(),
+          '/employeeC' : (context) => employeeCreate(),
         },
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -149,6 +157,7 @@ class _LockScreenState extends State<LockScreen> {
                 onPressed: (){
                   if(username=='s') Navigator.pushNamed(context, '/worker');
                   if(username=='h') Navigator.pushNamed(context, '/home');
+                  if(username=='m') Navigator.pushNamed(context, '/manager');
                 },
                 child:Text.rich(
                   TextSpan(text: "Enter", style: TextStyle(fontWeight: FontWeight.bold)),
