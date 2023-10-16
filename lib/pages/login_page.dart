@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:token_system/employee_create.dart';
-import 'package:token_system/main_page_organise.dart';
-import 'package:token_system/manger.dart';
-import 'package:token_system/register_item.dart';
-import 'package:token_system/student_create.dart';
-import 'package:token_system/student_delete.dart';
-import 'package:token_system/useit_page.dart';
-import 'package:token_system/scanner_page.dart';
-import 'package:token_system/employee_page.dart';
+import 'package:token_system/pages/employee_create.dart';
+import 'package:token_system/pages/employee_delete.dart';
+import 'package:token_system/pages/main_page_organise.dart';
+import 'package:token_system/pages/manger.dart';
+import 'package:token_system/pages/register_item.dart';
+import 'package:token_system/pages/student_create.dart';
+import 'package:token_system/pages/student_delete.dart';
+import 'package:token_system/pages/useit_page.dart';
+import 'package:token_system/pages/scanner_page.dart';
+import 'package:token_system/pages/employee_page.dart';
+
+
+
+
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +41,7 @@ class MyApp extends StatelessWidget {
           '/studentC': (context) => studentCreate(),
           '/studentD' : (context) => studentDelete(),
           '/employeeC' : (context) => employeeCreate(),
+          '/employeeD' : (context) => employeeDelete(),
         },
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -155,6 +161,7 @@ class _LockScreenState extends State<LockScreen> {
               ),
               ElevatedButton(
                 onPressed: (){
+
                   if(username=='s') Navigator.pushNamed(context, '/worker');
                   if(username=='h') Navigator.pushNamed(context, '/home');
                   if(username=='m') Navigator.pushNamed(context, '/manager');

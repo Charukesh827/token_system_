@@ -29,7 +29,7 @@ class _employeeCreateState extends State<employeeCreate> {
               children: [
                 Spacer(flex: 2,),
                 Text(
-                  "Create Student account",
+                  "Create Employee account",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
                 Spacer(flex: 1,),
@@ -95,7 +95,7 @@ class _employeeCreateState extends State<employeeCreate> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(dob),
+                                Text(doj),
                                 Spacer(),
                                 IconButton(
                                     onPressed: (){
@@ -107,7 +107,7 @@ class _employeeCreateState extends State<employeeCreate> {
                                       ).then((value) {
                                         setState(() {
                                           date=value;
-                                          dob=DateFormat("dd-MM-yyyy").format(date);
+                                          doj=DateFormat("dd-MM-yyyy").format(date);
                                         });
                                       });
                                     },
@@ -162,7 +162,7 @@ class _employeeCreateState extends State<employeeCreate> {
                           print("$roll , $name , $course , $dob");
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Student added !'))
+                              SnackBar(content: Text('Employee added !'))
                           );
                         }
                       },

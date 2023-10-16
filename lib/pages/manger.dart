@@ -44,6 +44,7 @@ class _managerPageState extends State<managerPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Spacer(flex: 1,),
               Card(
                 child: Column(
                   children:[
@@ -128,6 +129,7 @@ class _managerPageState extends State<managerPage> {
                   ]
                 ),
               ),
+              Spacer(flex: 1,),
               Card(
                 child: Column(
                   children: [
@@ -204,6 +206,7 @@ class _managerPageState extends State<managerPage> {
                   ],
                 ),
               ),
+              Spacer(flex: 1,),
             ],
           ),
         ),

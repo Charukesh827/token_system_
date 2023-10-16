@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:token_system/register_item.dart';
+import 'package:token_system/pages/register_item.dart';
 import 'package:intl/intl.dart';
+import 'package:token_system/database/service.dart';
+import 'package:token_system/database/token_system_connection.dart';
 class HomePage extends StatefulWidget{
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  var roll="22pw10";
   late var now;
   late var formatter;
   late String formattedDate;
@@ -30,6 +33,18 @@ class _HomePageState extends State<HomePage> {
   int getegg=0;
 
   double eggElevate=10;
+
+  _addEgg(){
+    if(egg==0){
+      print("Empty egg");
+      return;
+    }
+    Service.addEgg(roll, egg).then((result){
+        if('success' == result){
+          print("Inserted");
+        }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

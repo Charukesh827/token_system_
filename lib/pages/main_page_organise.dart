@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:token_system/home_page.dart';
-import 'package:token_system/history_page.dart';
+import 'package:token_system/pages/home_page.dart';
+import 'package:token_system/pages/history_page.dart';
 
 
 class MyHomePage extends StatefulWidget {
